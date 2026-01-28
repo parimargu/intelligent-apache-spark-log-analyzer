@@ -1,0 +1,135 @@
+# Application Configuration
+app:
+  name: "Intelligent Apache Spark Log Analyzer"
+  version: "1.0.0"
+  description: "AI-powered log analysis for Apache Spark"
+
+# Database Configuration
+database:
+  # Supports: sqlite, postgresql
+  type: sqlite
+  sqlite:
+    path: "./spark_logs.db"
+  postgresql:
+    host: localhost
+    port: 5432
+    database: spark_logs
+    username: postgres
+    password: ""
+
+# Log Ingestion Settings
+ingestion:
+  upload_dir: "./uploads"
+  watch_dir: "./watch"
+  max_file_size_mb: 100
+  supported_extensions:
+    - ".log"
+    - ".txt"
+    - ".gz"
+    - ".zip"
+  watch_poll_interval_seconds: 30
+
+# Log Parsing Configuration
+parser:
+  # Supported log formats
+  formats:
+    - spark_standalone
+    - spark_yarn
+    - spark_kubernetes
+  
+  # Language detection
+  languages:
+    - python
+    - scala
+    - java
+    - sql
+    - r
+
+  # Patterns for log level detection
+  log_levels:
+    - INFO
+    - WARN
+    - ERROR
+    - DEBUG
+    - FATAL
+
+# LLM Configuration
+llm:
+  # Default provider: openai, gemini, anthropic, groq, openrouter, ollama
+  default_provider: openai
+  
+  # Provider-specific settings
+  providers:
+    openai:
+      model: "gpt-4o-mini"
+      max_tokens: 4096
+      temperature: 0.3
+    
+    gemini:
+      model: "gemini-pro"
+      max_tokens: 4096
+      temperature: 0.3
+    
+    anthropic:
+      model: "claude-3-sonnet-20240229"
+      max_tokens: 4096
+      temperature: 0.3
+    
+    groq:
+      model: "mixtral-8x7b-32768"
+      max_tokens: 4096
+      temperature: 0.3
+    
+    openrouter:
+      model: "openai/gpt-4-turbo-preview"
+      max_tokens: 4096
+      temperature: 0.3
+    
+    ollama:
+      base_url: "http://localhost:11434"
+      model: "llama2"
+      max_tokens: 4096
+      temperature: 0.3
+
+# Analysis Settings
+analysis:
+  # Enable specific analysis types
+  types:
+    - root_cause
+    - memory_issues
+    - performance_bottlenecks
+    - configuration_optimization
+  
+  # RAG Settings (for context enhancement)
+  rag:
+    enabled: true
+    chunk_size: 1000
+    chunk_overlap: 200
+
+# Security Settings
+security:
+  jwt:
+    algorithm: "HS256"
+    access_token_expire_minutes: 30
+  
+  # API key authentication for ingestion
+  api_key:
+    enabled: true
+    header_name: "X-API-Key"
+
+# Logging Configuration
+logging:
+  level: INFO
+  format: json
+  include_timestamp: true
+
+# Report Settings
+reports:
+  pagination:
+    default_page_size: 20
+    max_page_size: 100
+  
+  export_formats:
+    - json
+    - csv
+    - pdf

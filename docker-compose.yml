@@ -1,0 +1,50 @@
+services:
+  backend:
+    build: ./backend
+    container_name: spark-analyzer-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/spark_analyzer
+      - LOG_UPLOAD_DIR=/app/logs/uploads
+      - LOG_WATCH_DIR=/app/logs/watch
+    volumes:
+      - log_uploads:/app/logs/uploads
+      - log_watch:/app/logs/watch
+      - ./backend/data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: spark-analyzer-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: spark-analyzer-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=spark_analyzer
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  log_uploads:
+  log_watch:
